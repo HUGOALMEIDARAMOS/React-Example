@@ -73,3 +73,33 @@ export default defineConfig([
 ])
 
 ```
+
+## Getting Started
+
+Prerequisites: Node.js and npm (use the system or version manager you prefer).
+
+Important: this repository already contains the declared package lockfile. Do not change dependency versions unless you intend to modify the project.
+
+Common commands (run locally):
+
+```bash
+# install dependencies from the lockfile
+npm ci
+
+# run development server
+npm run dev
+
+# build (runs tsc -b and vite build)
+npm run build
+
+# preview production build
+npm run preview
+
+# lint project
+npm run lint
+```
+
+Notes:
+- This project uses TypeScript and Vite. Keep existing configs (`tsconfig.*`, `vite.config.ts`, `eslint.config.js`) unchanged unless necessary.
+- Do not commit sensitive files like `.env`; create a local `.env` if needed and ensure it is ignored by `.gitignore`.
+- The repository is intended to be used with npm (see `package-lock.json`).
