@@ -17,7 +17,7 @@ const CategoryMaster = () => {
         getAllCategories();
     }, []);
 
-    const updateCategoryName = 
+    // const updateCategoryName = 
 
 
     const getAllCategories = async () => {
