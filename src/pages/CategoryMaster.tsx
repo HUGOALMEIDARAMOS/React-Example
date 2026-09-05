@@ -17,7 +17,28 @@ const CategoryMaster = () => {
         getAllCategories();
     }, []);
 
-    // const updateCategoryName = 
+    const updateCategoryName = (event: any) => {
+        setNewCategoryList(oldObj => ({ ...oldObj, categoryName: event.target.value }));
+    }
+
+    const updateIsActive = (event: any) => {
+        setNewCategoryList(oldObj => ({ ...oldObj, isActive: event.target.checked }));
+    }
+
+    const onSaveCategory = async () => {
+        try {
+            const response = await axios.post('https://api.freeprojectapi.com/api/Enquiry/create-category', newcategoryList);
+            if(response.data.result){
+                alert('Category saved successfully');
+                getAllCategories();
+            }else{
+                alert('Failed to save category');
+            }
+        } catch (error) {
+            console.error('Error saving category:', error);
+        }
+    }
+
 
 
     const getAllCategories = async () => {
@@ -47,17 +68,17 @@ const CategoryMaster = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        categoryList.map((item:ICategory) => {
-                                            return   <tr>
+                                        categoryList.map((item: ICategory) => {
+                                            return <tr>
                                                 <td>{item.categoryName}</td>
                                                 <td>{item.isActive ? 'Active' : 'Desabled'}</td>
                                                 <td>
                                                     <button className="btn btn-sm btn-warning">Edit</button>
                                                     <button className="btn btn-sm btn-danger mx-2">Delete</button>
                                                 </td>
-                                             </tr>
+                                            </tr>
                                         })
-                                    }                                  
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -66,26 +87,27 @@ const CategoryMaster = () => {
                 <div className="col-5">
                     <div className="card">
                         <div className="card-header bg-warning">category Form</div>
+                        <div style={{ backgroundColor: 'lightblue' }}>{newcategoryList.categoryName} --- {newcategoryList.isActive ? 'Active' : 'Inactive'}</div>
                         <div className="card-body">
                             <div className="row">
                                 <div className="col-6">
-                                  <label htmlFor="">Category Name</label>
-                                  <input type="text" className="form-control" placeholder="Name"/>
-                                </div>  
+                                    <label htmlFor="">Category Name</label>
+                                    <input type="text" className="form-control" placeholder="Name" onChange={(eve) => updateCategoryName(eve)} />
+                                </div>
                                 <div className="col-6">
-                                  <label htmlFor="">Is Active</label>
-                                  <br/>
-                                  <input type="checkbox"/>
-                                </div>   
+                                    <label htmlFor="">Is Active</label>
+                                    <br />
+                                    <input type="checkbox" onChange={(eve) => updateIsActive(eve)} />
+                                </div>
                             </div>
-                             <div className="row pt-3">
+                            <div className="row pt-3">
                                 <div className="col-6 text-center">
                                     <button className="btn btn-secondary">Reset Form</button>
                                 </div>
                                 <div className="col-6 text-center">
-                                    <button className="btn btn-success">Save Category</button>
+                                    <button className="btn btn-success" onClick={onSaveCategory}>Save Category</button>
                                 </div>
-                             </div>
+                            </div>
                         </div>
                     </div>
                 </div>
