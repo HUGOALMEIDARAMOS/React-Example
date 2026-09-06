@@ -45,6 +45,10 @@ const CategoryMaster = () => {
 
     const onDelete = async (categoryId: number) => {
         try {
+            const isConfirmed = window.confirm('Are you sure you want to delete this category?');
+            if (!isConfirmed) {
+                return; // Exit if the user cancels the deletion
+            }
             const response = await axios.delete(`https://api.freeprojectapi.com/api/Enquiry/delete-category/${categoryId}`);
             if(response.data.result){
                 alert('Category deleted successfully');
