@@ -39,6 +39,45 @@ const CategoryMaster = () => {
         }
     }
 
+    const onEdit = (item: ICategory) => {
+        setNewCategoryList(item);
+    }
+
+    const onDelete = async (categoryId: number) => {
+        try {
+            const response = await axios.delete(`https://api.freeprojectapi.com/api/Enquiry/delete-category/${categoryId}`);
+            if(response.data.result){
+                alert('Category deleted successfully');
+                getAllCategories();
+            }else{
+                alert('Failed to delete category');
+            }               
+        } catch (error) {
+            console.error('Error deleting category:', error);
+        }
+    }
+
+    const onReset = () => {
+        setNewCategoryList({
+            categoryId: 0,
+            categoryName: '',
+            isActive: false
+        });
+    }
+
+    const onUpdateCategory = async () => {
+        try {
+            const response = await axios.put('https://api.freeprojectapi.com/api/Enquiry/update-category/'+newcategoryList.categoryId, newcategoryList);
+            if(response.data.result){
+                alert('Category updated successfully');                 
+                getAllCategories();
+            }else{
+                alert('Failed to update category');
+            }
+        } catch (error) {
+            console.error('Error updating category:', error);
+        }
+    }
 
 
     const getAllCategories = async () => {
@@ -73,8 +112,8 @@ const CategoryMaster = () => {
                                                 <td>{item.categoryName}</td>
                                                 <td>{item.isActive ? 'Active' : 'Desabled'}</td>
                                                 <td>
-                                                    <button className="btn btn-sm btn-warning">Edit</button>
-                                                    <button className="btn btn-sm btn-danger mx-2">Delete</button>
+                                                    <button className="btn btn-sm btn-warning" onClick={() => onEdit(item)}>Edit</button>
+                                                    <button className="btn btn-sm btn-danger mx-2" onClick={() => onDelete(item.categoryId)}>Delete</button>
                                                 </td>
                                             </tr>
                                         })
@@ -92,20 +131,22 @@ const CategoryMaster = () => {
                             <div className="row">
                                 <div className="col-6">
                                     <label htmlFor="">Category Name</label>
-                                    <input type="text" className="form-control" placeholder="Name" onChange={(eve) => updateCategoryName(eve)} />
+                                    <input type="text" value={newcategoryList.categoryName} className="form-control" placeholder="Name" onChange={(eve) => updateCategoryName(eve)} />
                                 </div>
                                 <div className="col-6">
                                     <label htmlFor="">Is Active</label>
                                     <br />
-                                    <input type="checkbox" onChange={(eve) => updateIsActive(eve)} />
+                                    <input type="checkbox" checked={newcategoryList.isActive} onChange={(eve) => updateIsActive(eve)} />
                                 </div>
                             </div>
                             <div className="row pt-3">
                                 <div className="col-6 text-center">
-                                    <button className="btn btn-secondary">Reset Form</button>
+                                    <button className="btn btn-secondary" onClick={onReset}>Reset Form</button>
                                 </div>
                                 <div className="col-6 text-center">
-                                    <button className="btn btn-success" onClick={onSaveCategory}>Save Category</button>
+                                    {
+                                        newcategoryList.categoryId === 0 ? <button className="btn btn-success" onClick={onSaveCategory}>Save Category</button> : <button className="btn btn-warning" onClick={onUpdateCategory}>Update Category</button>
+                                    }
                                 </div>
                             </div>
                         </div>
