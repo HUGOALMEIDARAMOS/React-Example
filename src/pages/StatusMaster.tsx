@@ -1,22 +1,58 @@
 import { useEffect, useState } from "react";
 import { APIService } from "../services/master";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+
+//criar esquema de validação para o formulário
+const formSchema = z.object({
+    statusId: z.number(),
+    statusName: z.string().min(3, { message: "Min 3 char Needed" }),
+    isActive: z.boolean(),
+})
+
+//criar tipo de formulário a partir do esquema de validação
+type statusFormType = z.infer<typeof formSchema>;
 
 
 const StatusMaster = () => {
 
+    //criar instância do hook useForm com o esquema de validação e os valores padrão
+    const {register, handleSubmit, formState: {errors}} = useForm<statusFormType>({
+        resolver: zodResolver(formSchema),
+        defaultValues:{
+            isActive: false,
+            statusName: "",
+            statusId: 0
+        }
+    });
 
+    //função para salvar o status no banco de dados
+    const onSaveStatus = async (data:any) => {
+        const result = await APIService.createNewStatus(data);
+        if(result.result){
+            getAllStatus()
+            alert("Status Created Successfully");
+        }else{
+            alert("Error Occured" + result.data.message);
+        }
+    }
+
+    //criar estado para armazenar a lista de status
     const [statusList, setStatusList] = useState([]);
 
+    //useEffect para buscar a lista de status ao carregar o componente
     useEffect(() => {
         // Fetch status list from API or database
          getAllStatus();
     }, []);
 
+    //função para buscar a lista de status do banco de dados
     const getAllStatus = async () => {
         const result = await APIService.getAllStatus();
         setStatusList(result);
     }
-
 
 
     return (
@@ -56,7 +92,7 @@ const StatusMaster = () => {
                                                        <td>{status.statusName}</td>
                                                        <td className="text-center">
                                                         {
-                                                            status.isActive ?  <span className="badge bg-success">Yes</span> : <span className="badge bg-danger">No</span>                                                            
+                                                            status.isActive ?  <span className="badge bg-success">Yes</span> : <span className="badge bg-secondary">No</span>                                                            
                                                         }
                                                        </td>
                                                        <td> 
@@ -91,19 +127,7 @@ const StatusMaster = () => {
 
                             <div className="card-body">
 
-                                <form>
-                                    <div className="mb-3">
-                                        <label htmlFor="statusId" className="form-label">
-                                            Status ID
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="statusId"
-                                            placeholder="Enter status ID"
-                                        />
-                                    </div>
+                                <form onSubmit={handleSubmit(onSaveStatus)}>
 
                                     <div className="mb-3">
                                         <label htmlFor="statusName" className="form-label">
@@ -114,8 +138,11 @@ const StatusMaster = () => {
                                             type="text"
                                             className="form-control"
                                             id="statusName"
+                                            {...register("statusName")}
+                                            name="statusName"
                                             placeholder="Enter status name"
                                         />
+                                          {errors.statusName && <p className="text-danger">{errors.statusName.message}</p>}
                                     </div>
 
                                     <div className="mb-3">
@@ -124,8 +151,10 @@ const StatusMaster = () => {
                                                 className="form-check-input"
                                                 type="checkbox"
                                                 id="isActive"
+                                                {...register("isActive")}
+                                                name="isActive"
                                             />
-
+                                          
                                             <label
                                                 className="form-check-label"
                                                 htmlFor="isActive"
