@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import CategoryMaster from './pages/CategoryMaster'
 import StatusMaster from './pages/StatusMaster';
@@ -6,10 +6,15 @@ import NewEnquiryForm from './pages/NewEnquiryForm';
 import EnquiryList from './pages/EnquiryList';
 
 function App() {
+  const location = useLocation();
+
+  const hideNavBar = location.pathname === '/' || location.pathname === '/new-enquiry';
 
 
   return (
     <>
+    {
+      hideNavBar === false && 
       <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">Enquiry App</a>
@@ -31,6 +36,8 @@ function App() {
           </div>
         </div>
       </nav>
+    }
+      
       <Routes>
         <Route path="" element={<NewEnquiryForm />} />
         <Route path="category" element={<CategoryMaster />} />
