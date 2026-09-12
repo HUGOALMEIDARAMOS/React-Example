@@ -4,6 +4,7 @@ import CategoryMaster from './pages/CategoryMaster'
 import StatusMaster from './pages/StatusMaster';
 import NewEnquiryForm from './pages/NewEnquiryForm';
 import EnquiryList from './pages/EnquiryList';
+import UseRefEx from './pages/UseRefEx';
 
 function App() {
   const location = useLocation();
@@ -32,6 +33,9 @@ function App() {
                <li className="nav-item">
                 <Link className="nav-link" to={'/enquiry-list'}>Enquiry List</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to={'/useref'}>UseRef Example</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -44,6 +48,7 @@ function App() {
         <Route path="status" element={<StatusMaster />} />
         <Route path="new-enquiry" element={<NewEnquiryForm />} />
         <Route path="enquiry-list" element={<EnquiryList />} />
+        <Route path="useref" element={<UseRefEx/>} /> 
       </Routes>
     </>
   )
